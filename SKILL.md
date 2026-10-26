@@ -10,12 +10,24 @@ This skill makes an agent able to operate **Cloud.ru Object Storage** (S3-compat
 ## How to connect
 
 ```text
-Endpoint:   s3.cloud.ru            (HTTP/2)
-Auth:       Authorization header — S3-style "authorization string" (SigV4-compatible signing of access key)
-Headers:    https://cloud.ru/docs/s3e/ug/topics/api__headers-request
-Errors:     https://cloud.ru/docs/s3e/ug/topics/api__response-codes
-Roles:      https://cloud.ru/docs/s3e/ug/topics/security__role
+Endpoint:   https://s3.cloud.ru     (HTTP/2)
+SigV4 region: ru-central-1        (the API itself reports "unexpected region, expecting 'ru-central-1'")
+Auth:       Authorization header — AWS SigV4
 ```
+
+**Verified credential format** (empirically checked against the live API; also reported by the [console of Cloud.ru](https://cloud.ru)):
+
+- `AccessKeyId` = `{TENANT_ID}:{KEY_ID}` — plain `KEY_ID` alone is **rejected** (`InvalidAccessKeyId`).
+- `SecretAccessKey` = `KEY_SECRET` as given.
+- Signing: standard AWS SigV4, service `s3`.
+- Paths currently documented as `/{bucket}` are used directly; bucket **name** is the console name (e.g. `bucket-f77da8`), not the internal resource GUID.
+- Note: a key may be scoped to specific buckets — service-level `GET /` (ListBuckets) returned `AccessDenied` while per-bucket operations fully worked.
+
+### Verified round-trip (2026-10-26, bucket `bucket-f77da8`)
+
+ListObjectsV2 → 200 · PutObject → 200 · GetObject (byte-equal round-trip) → 200 · HeadObject → 200 · DeleteObject → 204 · re-Get → 404.
+
+Common headers also listed at: https://cloud.ru/docs/s3e/ug/topics/api__headers-request · Errors: https://cloud.ru/docs/s3e/ug/topics/api__response-codes · Roles: https://cloud.ru/docs/s3e/ug/topics/security__role
 
 ## Decision tree
 
