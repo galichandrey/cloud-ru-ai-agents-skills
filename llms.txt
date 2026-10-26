@@ -1,0 +1,12 @@
+> Cloud.ru Object Storage (S3-compatible, endpoint s3.cloud.ru) — Object methods reference for AI agents.
+> English markdown, one file per method, faithful to https://cloud.ru/docs/s3e/ug/topics/api__methods-object.
+
+- [README](README.md): landing page — endpoint, auth, method index table, lifecycle diagram.
+- [methods/put-object.md](methods/put-object.md): PUT /{bucket}/{key} — adds an object to a bucket. 200 OK, ETag, x-amz-meta-* metadata.
+- [methods/get-object.md](methods/get-object.md): GET /{bucket}/{key} — retrieves object body; ?versionId selects a version.
+- [methods/head-object.md](methods/head-object.md): HEAD /{bucket}/{key} — metadata only, no download; ?partNumber, ?versionId.
+- [methods/copy-object.md](methods/copy-object.md): PUT /{bucket}/{key} with x-amz-copy-source — server-side copy.
+- [methods/delete-object.md](methods/delete-object.md): DELETE /{bucket}/{key} — deletes one object; ?versionId; 204 even if absent.
+- [methods/delete-objects.md](methods/delete-objects.md): DELETE /{bucket} — batch delete of objects.
+- [methods/list-objects.md](methods/list-objects.md): GET /{bucket} — legacy listing, up to 1000 keys; params prefix, delimiter, key-marker, max-keys, encoding-type.
+- [methods/list-objects-v2.md](methods/list-objects-v2.md): GET /{bucket}?list-type=2 (required) — recommended listing; KeyCount, IsTruncated; no Owner blocks.
